@@ -384,12 +384,16 @@ $fewShotExample
         applicantName: String?,
         otherName: String?,
         numberedEntities: String,
+        sourceText: String,
     ): String = """
 issuer_name: ${issuerName ?: "(none)"}
 applicant_name: ${applicantName ?: "(none)"}
 other_name: ${otherName ?: "(none)"}
 
 $numberedEntities
+
+Document text:
+$sourceText
 
 Label each entity.
     """.trimIndent()
@@ -407,6 +411,22 @@ other_name: (none)
 6. ADDRESS: 港区虚空町1-2-3
 7. DATE_TIME: 昭和60年1月1日
 8. MONEY: 15,000円
+
+Document text:
+令和7年度 児童手当現況届
+
+江戸川区役所
+〒132-0000 江戸川区中央1-2-3
+電話: 03-1234-5678
+Email: kosodate@city.edogawa.tokyo.jp
+
+提出期限: 令和7年6月30日
+
+受給者氏名: 山田太郎
+生年月日: 昭和60年1月1日
+住所: 港区虚空町1-2-3
+
+支給予定額: 15,000円
 
 ---
 
@@ -434,6 +454,23 @@ other_name: (none)
 7. ADDRESS: 456 Oak Street, Springfield
 8. PHONE: (555) 987-6543
 9. MONEY: ${"$"}2,500.00
+
+Document text:
+City General Hospital
+123 Medical Center Drive, Springfield
+Phone: (555) 234-5678
+Email: consent@citygeneral.org
+
+SURGICAL PROCEDURE CONSENT FORM
+Date: March 15, 2025
+
+Patient: John Smith
+Date of Birth: February 3, 1985
+Address: 456 Oak Street, Springfield
+Emergency Contact: (555) 987-6543
+
+Procedure Date: March 20, 2025
+Estimated Cost: ${"$"}2,500.00
 
 ---
 

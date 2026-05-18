@@ -20,6 +20,7 @@ import io.github.joyk0117.paperworknavigator.customtasks.documentreview.model.Ev
 import io.github.joyk0117.paperworknavigator.customtasks.documentreview.model.LocationEntry
 import io.github.joyk0117.paperworknavigator.customtasks.documentreview.model.PiiSpan
 import io.github.joyk0117.paperworknavigator.customtasks.documentreview.model.ReviewResult
+import io.github.joyk0117.paperworknavigator.BuildConfig
 import io.github.joyk0117.paperworknavigator.customtasks.documentreview.model.computePiiTier
 import java.time.Instant
 import java.time.ZoneId
@@ -83,6 +84,7 @@ object EntityExtractor {
                         val typeLabel = entityTypeLabel(entity.type)
                         val staticLabel = staticContextLabel(entity.type)
                         val metadata = buildMetadata(entity)
+                        if (BuildConfig.DEBUG) Log.d(TAG, "ML Kit detected: type=$typeLabel rawText=\"$rawText\"")
                         detectedEntities.add(
                             DetectedEntity(
                                 type = typeLabel,

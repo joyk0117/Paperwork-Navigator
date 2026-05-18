@@ -11,7 +11,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
 
 private const val TAG = "EntityAnnotator"
-private const val TIMEOUT_MS = 60_000L
+private const val TIMEOUT_MS = 120_000L
 
 private val ANNOTATABLE_TYPES = setOf("DATE_TIME", "ADDRESS", "PHONE", "EMAIL", "MONEY")
 
@@ -36,6 +36,7 @@ class EntityAnnotator(private val llmHelper: LlmModelHelper) {
         issuerName: String?,
         applicantName: String?,
         otherName: String?,
+        sourceText: String,
     ): List<DetectedEntity> {
         val annotatable = entities.filter { it.type in ANNOTATABLE_TYPES }
         if (annotatable.isEmpty()) return entities
@@ -49,6 +50,7 @@ class EntityAnnotator(private val llmHelper: LlmModelHelper) {
             applicantName = applicantName,
             otherName = otherName,
             numberedEntities = numberedEntities,
+            sourceText = sourceText,
         )
 
         val raw = try {
