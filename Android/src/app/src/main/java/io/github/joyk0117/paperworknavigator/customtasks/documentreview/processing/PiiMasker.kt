@@ -8,6 +8,8 @@ object PiiMasker {
 
     internal const val MASK_TOKEN = "[■■■]"
 
+    private val HONORIFICS = listOf("Mr.", "Ms.", "Mrs.", "Dr.", "Sir")
+
     fun mask(text: String, spans: List<PiiSpan>): MaskResult = applyMask(text, spans)
 
     fun remask(text: String, spans: List<PiiSpan>): MaskResult = applyMask(text, spans)
@@ -38,6 +40,16 @@ object PiiMasker {
             } else {
                 unmatched.add(span)
             }
+
+            if (span.sourceField == "applicant_name") {
+                val token = Regex.escapeReplacement(span.maskToken())
+                for (variant in nameVariants(span.spanText)) {
+                    val variantRegex = buildMatchRegex(variant) ?: continue
+                    if (variantRegex.containsMatchIn(result)) {
+                        result = variantRegex.replace(result, token)
+                    }
+                }
+            }
         }
 
         return MaskResult(
@@ -46,6 +58,19 @@ object PiiMasker {
             skippedSpans = skipped,
             unmatchedSpans = unmatched,
         )
+    }
+
+    // Generates partial-name variants for applicant_name masking (姓のみ・敬称付き姓など).
+    // Only first/last tokens with length >= 3 are used to avoid false positives.
+    // Tokens without whitespace separators (e.g. "山田太郎") produce no variants.
+    internal fun nameVariants(fullName: String): List<String> {
+        val tokens = fullName.trim().split(Regex("\\s+"))
+        if (tokens.size < 2) return emptyList()
+        val candidates = linkedSetOf(tokens.first(), tokens.last()).filter { it.length >= 3 }
+        return buildList {
+            addAll(candidates)
+            candidates.forEach { name -> HONORIFICS.forEach { add("$it $name") } }
+        }
     }
 
     // Builds a regex that matches the span text with flexible whitespace in both directions:
