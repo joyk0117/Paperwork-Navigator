@@ -28,7 +28,7 @@
 - System prompts are written in English (to leverage the LLM's multilingual capabilities and maintain uniform output quality across documents in any language)
 - Document text (in any language) is passed in user messages, and output format is selected based on the model's capabilities (see below)
 - Stability of accuracy is improved by including few-shot examples
-- Context length limit: input text is trimmed to 8,000 characters or less (Specification §9.4)
+- Context length limit: input text is trimmed to 16,000 characters or less (applied by ViewModel, Specification §9.4)
 
 ### 1.1 MF-02 Output Format Selection Rationale
 
@@ -90,7 +90,7 @@ List any transcription errors found.
 
 | Variable | Description |
 |----------|-------------|
-| `{ocr_text}` | Text output by ML Kit OCR (trimmed by `TextExtractor.MAX_CHARS`) |
+| `{ocr_text}` | Text output by ML Kit OCR (trimmed by `LLM_INPUT_MAX_CHARS`) |
 
 ### 2.4 Output Format and Kotlin-side Parsing
 
@@ -169,7 +169,7 @@ Analyze the following document text:
 | Variable | Description | Reference |
 |----------|-------------|-----------|
 | `{few_shot_example}` | Few-shot example from §8 (line format) | [Few-shot Examples](#8-few-shot-examplemf-02--entityannotator--mf-03) |
-| `{document_text}` | Text extracted by TextExtractor (trimmed to 8,000 characters or less) | — |
+| `{document_text}` | Text extracted by TextExtractor (trimmed to 16,000 characters or less) | — |
 
 ### 3.4 Retry Policy
 
@@ -419,7 +419,7 @@ When chat history is empty, omit the "Prior Q&A" section entirely (do not output
 | `{doc_name}` | `reviewResult.docName` | — |
 | `{summary}` | `reviewResult.translation.summary` or `reviewResult.summaryJa` | — |
 | `{action_items}` | Numbered list format (prioritize translated fields) | — |
-| `{source_text}` | `DocumentReviewViewModel.sourceText` (raw text extracted by TextExtractor, trimmed to 8,000 characters or less). Passing raw text is acceptable for on-device inference (same as MF-02) | — |
+| `{source_text}` | `DocumentReviewViewModel.sourceText` (raw text extracted by TextExtractor, trimmed to 16,000 characters or less). Passing raw text is acceptable for on-device inference (same as MF-02) | — |
 | `{chat_history}` | `DocumentChatSession.getChatHistory()` converted to `Q:` / `A:` format. Omit the section entirely if empty | — |
 
 #### Error Handling
@@ -527,7 +527,7 @@ Respond in {target_language}. Be concise and clear. Keep each response under 3 s
 | `{action_items}` | Numbered list (prioritize translated fields) | Plain text |
 | `{required_items}` | Numbered list (prioritize translated fields) | Plain text |
 | `{warnings}` | Numbered list (prioritize translated fields) | Plain text |
-| `{source_text}` | `DocumentReviewViewModel.sourceText` (raw text extracted by TextExtractor, trimmed to 8,000 characters or less). Passing raw text is acceptable for on-device inference (same as MF-02) | String |
+| `{source_text}` | `DocumentReviewViewModel.sourceText` (raw text extracted by TextExtractor, trimmed to 16,000 characters or less). Passing raw text is acceptable for on-device inference (same as MF-02) | String |
 | `{target_language}` | `reviewResult.translation?.language ?: reviewResult.sourceLanguage` → English text (use table from §5.5). If translated, use that language; if not translated, use the document's original language (`sourceLanguage`). When translation completes, reinitialize to ensure the correct language is always passed | String |
 
 > If `{deadline_note}` is null (document with no deadline), embed `"None"`.
@@ -690,7 +690,7 @@ Comprehensive list of variables to be embedded in each prompt during implementat
 | `{deadline_note}` | MF-07 | `DocumentChatSession` (translated prioritized, null → `"None"`) |
 | `{required_items}` | MF-07 | `DocumentChatSession` (numbered list format) |
 | `{warnings}` | MF-07 | `DocumentChatSession` (numbered list format) |
-| `{source_text}` | MF-07 / MF-06a | `DocumentReviewViewModel.sourceText` (raw text extracted by TextExtractor, trimmed to 8,000 characters or less) |
+| `{source_text}` | MF-07 / MF-06a | `DocumentReviewViewModel.sourceText` (raw text extracted by TextExtractor, trimmed to 16,000 characters or less) |
 | `{masked_text}` | MF-06 | `MaskResult.maskedText` |
 | `{masked_categories}` | MF-06 | Category list from `MaskResult.appliedSpans` (comma-separated) |
 | `{user_notes}` | MF-06 | S-04 user input notes (null → `"(none)"`) |

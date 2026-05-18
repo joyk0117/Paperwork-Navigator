@@ -16,8 +16,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
 
 private const val TAG = "FieldExtractor"
-// 8K chars ≈ 5,333 tokens; with 32K context and ~850-token system prompt there is ample headroom.
-private const val MAX_INPUT_CHARS = 8_000
 // 150 s: Gemma 4 E2B generates line-format output at ~25 chars/sec after a ~15 s prefill.
 private const val TIMEOUT_MS = 150_000L
 private const val MAX_ATTEMPTS = 3
@@ -41,15 +39,13 @@ class FieldExtractor(private val llmHelper: LlmModelHelper) {
     ): ReviewResult {
         if (model.instance == null) throw FieldExtractionError.ModelNotInitialized
 
-        val trimmedText = text.take(MAX_INPUT_CHARS)
-
         var lastParseError: String? = null
         for (attempt in 0 until MAX_ATTEMPTS) {
             llmHelper.resetConversation(
                 model = model,
                 systemInstruction = Contents.of(PromptBuilder.mf02SystemPrompt()),
             )
-            val userMessage = PromptBuilder.mf02UserMessage(trimmedText, lastParseError)
+            val userMessage = PromptBuilder.mf02UserMessage(text, lastParseError)
             Log.d(TAG, "extract: attempt ${attempt + 1}/$MAX_ATTEMPTS")
 
             val raw = try {

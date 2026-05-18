@@ -11,24 +11,10 @@ class TextExtractorTest {
     // ── readFromStream ────────────────────────────────────────────────────────
 
     @Test
-    fun readFromStream_returnsFullText_whenUnderLimit() {
+    fun readFromStream_returnsFullText() {
         val input = "テスト文字列"
         val result = TextExtractor.readFromStream(ByteArrayInputStream(input.toByteArray(Charsets.UTF_8)))
         assertEquals(input, result)
-    }
-
-    @Test
-    fun readFromStream_trimsAt8001Chars() {
-        val input = "x".repeat(8_001)
-        val result = TextExtractor.readFromStream(ByteArrayInputStream(input.toByteArray()))
-        assertEquals(TextExtractor.MAX_CHARS, result.length)
-    }
-
-    @Test
-    fun readFromStream_keepsExactly8000Chars() {
-        val input = "b".repeat(TextExtractor.MAX_CHARS)
-        val result = TextExtractor.readFromStream(ByteArrayInputStream(input.toByteArray()))
-        assertEquals(TextExtractor.MAX_CHARS, result.length)
     }
 
     @Test
@@ -56,12 +42,6 @@ class TextExtractorTest {
     fun joinPageTexts_returnsSinglePage_asIs() {
         val result = TextExtractor.joinPageTexts(listOf("単一ページ"))
         assertEquals("単一ページ", result)
-    }
-
-    @Test
-    fun joinPageTexts_trimsTo8000Chars_whenOverLimit() {
-        val result = TextExtractor.joinPageTexts(listOf("a".repeat(5_000), "b".repeat(5_000)))
-        assertEquals(TextExtractor.MAX_CHARS, result.length)
     }
 
     // ── isPdfBytes ────────────────────────────────────────────────────────────

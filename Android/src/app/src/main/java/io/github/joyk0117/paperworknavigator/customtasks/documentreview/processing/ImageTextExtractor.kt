@@ -70,7 +70,6 @@ object ImageTextExtractor {
                     block.lines.joinToString("\n") { it.text }
                 }
                 .trim()
-                .take(TextExtractor.MAX_CHARS)
 
             if (text.isBlank()) throw ExtractionError.OcrFailed
             return text
