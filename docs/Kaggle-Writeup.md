@@ -48,13 +48,13 @@ Third, Gemma 4's stronger control features are important for product behavior. W
 
 Fourth, Gemma 4 supports the core story of this project: useful AI under privacy, edge, and low-connectivity constraints. Users should not have to choose between comprehension and confidentiality.
 
-## Why LiteRT
+## Why local inference
 
-Paperwork Navigator is also a strong fit for the LiteRT track because the entire user value depends on efficient local inference. We use LiteRT-LM on Android to keep the critical analysis path on-device. That means no server round trip, no cloud dependency during inference, and no need to transmit document contents off the phone after the initial model download.
+The entire user value of Paperwork Navigator depends on keeping inference on-device. We run Gemma 4 through LiteRT-LM on Android, so there is no server round trip and no need to transmit document contents off the phone after the initial model download.
 
-This is important both technically and socially. Technically, it makes the app usable in unstable-network settings. Socially, it makes the product credible for sensitive workflows involving government documents, benefits, identity information, and family data.
+This matters both technically and socially. Technically, it makes the app usable in unstable-network settings. Socially, it makes the product credible for sensitive workflows involving government documents, benefits, identity information, and family data.
 
-Our system is not "mobile" as a presentation choice. It is mobile because that is where the privacy and accessibility benefits become real.
+The app is mobile not as a presentation choice, but because that is where the privacy and accessibility benefits become real.
 
 ## How the system works
 
@@ -68,9 +68,9 @@ This creates a practical bridge between private local understanding and optional
 
 ## Impact
 
-We believe this project fits Digital Equity & Inclusivity because it lowers a real barrier to civic participation. Bureaucratic language is already hard. Bureaucratic language in a foreign language, under deadline pressure, is much worse. Paperwork Navigator helps users understand essential documents with more confidence and less risk.
+Bureaucratic language is already hard. In a foreign language, under deadline pressure, with real consequences for missing a step, it becomes a genuine barrier to civic participation. Paperwork Navigator lowers that barrier by giving people a way to understand essential documents with more confidence and less risk.
 
-It also fits Safety & Trust because the design starts from data minimization. The sensitive original document stays local, the masking step is non-LLM and on-device, and only a masked representation is prepared for optional sharing.
+The design starts from data minimization. The sensitive original document stays local. The masking step is non-LLM and runs on-device. Only a masked representation is prepared for optional sharing. This means users do not have to choose between getting help and protecting their private life.
 
 For the user, the benefit is simple: understand the form, know the deadline, know the next action, and ask for help without leaking your identity.
 
