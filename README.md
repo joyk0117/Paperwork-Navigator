@@ -42,7 +42,9 @@ Paperwork Navigator removes that tradeoff by completing the full inference flow 
 
 ## Demo
 
-[![Demo Video](https://img.youtube.com/vi/XgcFwhbReoA/hqdefault.jpg)](https://youtube.com/shorts/XgcFwhbReoA?feature=share)
+![Demo Video](https://img.youtube.com/vi/XgcFwhbReoA/hqdefault.jpg)
+
+[Watch on YouTube →](https://youtube.com/shorts/XgcFwhbReoA?feature=share)
 
 ---
 
