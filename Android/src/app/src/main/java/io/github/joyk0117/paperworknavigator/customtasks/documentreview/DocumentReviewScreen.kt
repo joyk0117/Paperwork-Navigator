@@ -2304,6 +2304,62 @@ private fun EntityGroupedFields(reviewResult: ReviewResult) {
                 content = entity.rawText,
             )
         }
+
+    // ── フォールバック: contextLabel 未付与エンティティ ──────────────────────
+    // EntityAnnotator が unknown を返した・タイムアウト・パース失敗した場合に
+    // contextLabel = null のまま残ったエンティティを型ベースで表示する。
+    // 既に contextLabel が付与されたエンティティは上のセクションで表示済みのためここには来ない。
+    val unlabeled = reviewResult.detectedEntities
+        .filter { it.contextLabel == null && it.rawText.isNotBlank() }
+    unlabeled.filter { it.type == "ADDRESS" }.forEach { entity ->
+        ReviewBadgeItem(
+            icon = "📍",
+            label = stringResource(R.string.doc_review_label_detected_address),
+            badgeColor = ReviewBadgeColor.GRAY,
+            content = entity.rawText,
+            trailingButton = DocumentIntentBuilder.mapsIntent(entity.rawText, null)?.let { intent ->
+                { IntentIconButton("🗺", intent) }
+            },
+        )
+    }
+    unlabeled.filter { it.type == "PHONE" }.forEach { entity ->
+        ReviewBadgeItem(
+            icon = "📞",
+            label = stringResource(R.string.doc_review_label_detected_phone),
+            badgeColor = ReviewBadgeColor.GRAY,
+            content = entity.rawText,
+            trailingButton = DocumentIntentBuilder.phoneIntent(entity.rawText)?.let { intent ->
+                { IntentIconButton("📞", intent) }
+            },
+        )
+    }
+    unlabeled.filter { it.type == "EMAIL" }.forEach { entity ->
+        ReviewBadgeItem(
+            icon = "✉️",
+            label = stringResource(R.string.doc_review_label_detected_email),
+            badgeColor = ReviewBadgeColor.GRAY,
+            content = entity.rawText,
+            trailingButton = DocumentIntentBuilder.emailIntent(entity.rawText)?.let { intent ->
+                { IntentIconButton("✉️", intent) }
+            },
+        )
+    }
+    unlabeled.filter { it.type == "MONEY" }.forEach { entity ->
+        ReviewBadgeItem(
+            icon = "💰",
+            label = stringResource(R.string.doc_review_label_detected_amount),
+            badgeColor = ReviewBadgeColor.GRAY,
+            content = entity.rawText,
+        )
+    }
+    unlabeled.filter { it.type == "DATE_TIME" }.forEach { entity ->
+        ReviewBadgeItem(
+            icon = "🗓",
+            label = stringResource(R.string.doc_review_label_detected_date),
+            badgeColor = ReviewBadgeColor.GRAY,
+            content = entity.rawText,
+        )
+    }
 }
 
 // ─── S-02: Review Badge ───────────────────────────────────────────────────────
