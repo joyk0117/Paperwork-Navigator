@@ -1,0 +1,58 @@
+<!--
+ Copyright 2026 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <!-- Document body (white paper with folded top-right corner) -->
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M26,18 L68,18 L82,32 L82,90 L26,90 Z"/>
+  <!-- Folded corner shadow -->
+  <path
+      android:fillColor="#FFCFD8DC"
+      android:pathData="M68,18 L68,32 L82,32 Z"/>
+  <!-- Text line 1 -->
+  <path
+      android:fillColor="#FF90CAF9"
+      android:pathData="M34,36 L74,36 L74,40 L34,40 Z"/>
+  <!-- Text line 2 (shorter) -->
+  <path
+      android:fillColor="#FF90CAF9"
+      android:pathData="M34,44 L66,44 L66,48 L34,48 Z"/>
+  <!-- Compass outer ring (deep blue) -->
+  <path
+      android:fillColor="#FF1565C0"
+      android:pathData="M36,70 A18,18 0 1 0 72,70 A18,18 0 1 0 36,70 Z"/>
+  <!-- Compass inner face (white) -->
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M39,70 A15,15 0 1 0 69,70 A15,15 0 1 0 39,70 Z"/>
+  <!-- N needle pointing NE (gold) -->
+  <path
+      android:fillColor="#FFFFC107"
+      android:pathData="M63.19,60.81 L51.88,67.88 L56.12,72.12 Z"/>
+  <!-- S needle pointing SW (gray) -->
+  <path
+      android:fillColor="#FFBDBDBD"
+      android:pathData="M44.81,79.19 L51.88,67.88 L56.12,72.12 Z"/>
+  <!-- Compass pivot (deep blue) -->
+  <path
+      android:fillColor="#FF1565C0"
+      android:pathData="M51,70 A3,3 0 1 0 57,70 A3,3 0 1 0 51,70 Z"/>
+</vector>

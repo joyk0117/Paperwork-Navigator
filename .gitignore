@@ -1,0 +1,21 @@
+.DS_Store
+.tmp/
+
+# Android Studio / IntelliJ IDEA
+.idea/
+
+# Claude Code
+.claude/
+
+# Local development artifacts
+issues/
+logs/
+scripts/
+
+# Fork残骸・非公開ファイル
+skills/
+CLAUDE.md
+Bug_Reporting_Guide.md
+Function_Calling_Guide.md
+CONTRIBUTING.md
+DEVELOPMENT.md
