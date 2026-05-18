@@ -77,10 +77,14 @@ CORRECT: <wrong_text>|<corrected_text>
 Rules:
 - Output one CORRECT line per error.
 - <wrong_text> must be copied verbatim from the OCR text.
-- <corrected_text> must match exactly what appears in the image.
+- <corrected_text> should match what appears in the image when the image is clear.
+- When the image is partially unclear, you may apply your language knowledge to determine
+  the most plausible correction — but only when you are highly confident.
+- Do NOT apply language-based corrections to proper nouns (personal names, place names,
+  organization names) — these have no single correct form derivable from language rules alone.
+- Do not make corrections based solely on stylistic preference or ambiguous context.
 - If no errors are found, output: (none)
 - Do not correct spacing or line-break differences unless they change meaning.
-- Do not guess corrections for text that is unclear or obscured in the image.
     """.trimIndent()
 
     fun mf01cUserMessage(ocrText: String): String = """

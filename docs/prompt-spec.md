@@ -1,8 +1,8 @@
 # Paperwork Navigator Prompt Specification
 
-> Version: 0.3.1
+> Version: 0.3.2
 > Created: 2026-05-07
-> Last Updated: 2026-05-15 (MF-02 reduced to 9 fields, EntityAnnotator section added, MF-08 deprecation note integrated into EntityAnnotator section, MF-06/MF-07 mask token descriptions updated to labeled format)
+> Last Updated: 2026-05-19 (MF-01c §2.1 relaxed image-strict constraint to permit high-confidence language-based corrections excluding proper nouns; §2.4 added boundary examples)
 > Target: MVP (MF-02 / EntityAnnotator / MF-03 / MF-06 / MF-07)
 > Based on: Implementation Specification v0.2.6 / Extraction Architecture Specification v1.0.0
 
@@ -70,10 +70,14 @@ CORRECT: <wrong_text>|<corrected_text>
 Rules:
 - Output one CORRECT line per error.
 - <wrong_text> must be copied verbatim from the OCR text.
-- <corrected_text> must match exactly what appears in the image.
+- <corrected_text> should match what appears in the image when the image is clear.
+- When the image is partially unclear, you may apply your language knowledge to determine
+  the most plausible correction — but only when you are highly confident.
+- Do NOT apply language-based corrections to proper nouns (personal names, place names,
+  organization names) — these have no single correct form derivable from language rules alone.
+- Do not make corrections based solely on stylistic preference or ambiguous context.
 - If no errors are found, output: (none)
 - Do not correct spacing or line-break differences unless they change meaning.
-- Do not guess corrections for text that is unclear or obscured in the image.
 ```
 
 ### 2.2 User Message
@@ -115,6 +119,21 @@ CORRECT:令利7年<令和7年>
 - `OcrCorrector.parseCorrections()` reads the lines and converts them to `List<Pair<String, String>>`
 - `OcrCorrector.applyCorrections()` applies `String.replace()` sequentially
 - On parse failure, `(none)` output, or timeout, use ocrText as-is (no retry)
+
+**Boundary examples — permitted corrections (non-existent vocabulary / obvious spelling mistakes):**
+```
+CORRECT: 令利7年|令和7年
+CORRECT: administraion|administration
+```
+
+**Boundary examples — suppressed corrections (proper nouns / ambiguous cases):**
+```
+(none)
+```
+
+> `令利7年` → `令和7年`: "令利" is not a valid Japanese era name, so correction is highly confident.
+> `administraion` → `administration`: clearly wrong spelling with a single unambiguous fix.
+> `山回太郎` is NOT corrected to `山田太郎`: "山回" could be a valid family name. Proper nouns must not be corrected by language knowledge alone.
 
 ---
 
@@ -783,3 +802,4 @@ Both E2B and E4B can be manually selected by the user in Model Manager. No autom
 *v0.2.4: Updated MF-02 to 16 fields (LOCATION → LOCATIONS for multiple, WARNINGS → WARNING single, added ISSUER_ADDRESS, EVENT_DATES, EXTRA_PII). Merged old MF-08 into EXTRA_PII, discontinued independent LLM step. Changed MF-03 output from JSON to line format (5 fields). Added MF-06 (escalation) subsection. Updated §7 MF-08 deprecation note, §8 few-shot examples, §9 variable reference, §10 evaluation criteria.*
 *v0.3.0: Reduced MF-02 from 16 to 9 fields (DOC_NAME, ISSUER_NAME, APPLICANT_NAME, OTHER_NAME, IMPORTANCE, SUMMARY, ACTION_ITEMS, REQUIRED_ITEMS, WARNING). Transferred extraction responsibility for dates, addresses, phones, emails, amounts, URLs to ML Kit EntityExtractor + EntityAnnotator. Added §4 EntityAnnotator section (system prompt, user message, ALLOWED_LABELS, parse spec). Added EntityAnnotator samples to §8 few-shot examples. Updated §10.1 evaluation criteria to 9-field MF-02 (removed DEADLINE_DATE row). Completely revised §10.5 from EXTRA_PII (old MF-08) to EntityAnnotator evaluation criteria.*
 *v0.3.1: Extended MF-07 chat timeout from 20 seconds to 60 seconds (aligned with Translator/OcrCorrector). Strengthened response constraint from `Keep each response under 3 sentences.` to `Limit your reply to 1–2 sentences.` (3 sentences in Japanese can exceed 150 chars). Updated §7.1 system prompt, §7.1 maxOutputTokens note, §10.4 TC-07-10/TC-07-11.*
+*v0.3.2: Relaxed MF-01c §2.1 image-strict constraint. Replaced `<corrected_text> must match exactly what appears in the image` and `Do not guess corrections for text that is unclear or obscured in the image` with four rules that permit high-confidence language-based corrections while prohibiting corrections to proper nouns and ambiguous cases. Added boundary examples to §2.4.*
