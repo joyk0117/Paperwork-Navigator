@@ -11,7 +11,7 @@ class TextExtractorTest {
     // ── readFromStream ────────────────────────────────────────────────────────
 
     @Test
-    fun readFromStream_returnsFullText_whenUnderLimit() {
+    fun readFromStream_returnsFullText() {
         val input = "テスト文字列"
         val result = TextExtractor.readFromStream(ByteArrayInputStream(input.toByteArray(Charsets.UTF_8)))
         assertEquals(input, result)
