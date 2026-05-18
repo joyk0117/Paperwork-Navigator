@@ -267,7 +267,7 @@ Label each entity.
 
 | 変数 | 説明 |
 |------|------|
-| `{few_shot_example}` | §8 の EntityAnnotator few-shot example（`===` 区切り 2 件） |
+| `{few_shot_example}` | §8 の EntityAnnotator few-shot example（`===` 区切り 3 件） |
 | `{issuer_name}` | `reviewResult.issuerName ?: "(none)"` |
 | `{applicant_name}` | `reviewResult.applicantName ?: "(none)"` |
 | `{other_name}` | `reviewResult.otherName ?: "(none)"` |
@@ -602,9 +602,11 @@ REQUIRED_ITEMS: Government-issued photo ID|Required at check-in|||Insurance card
 WARNING: medium|Failure to return the signed form may result in postponement of the procedure
 ```
 
-### 8.2 EntityAnnotator Few-shot Example（2 件、`===` 区切り）
+### 8.2 EntityAnnotator Few-shot Example（3 件、`===` 区切り）
 
 `{few_shot_example}` に埋め込むサンプル（Issue #134 §EntityAnnotator プロンプト仕様 より）。
+
+3 件目（介護保険負担割合証）は Issue #13 で追加。問い合わせ先のように本文内に電話番号・メールアドレスが埋め込まれる日本語書類パターンをカバーする。
 
 ```
 issuer_name: 江戸川区役所
@@ -658,6 +660,30 @@ other_name: (none)
 7: applicant_address
 8: other_phone
 9: fee
+
+===
+
+issuer_name: 新宿区役所
+applicant_name: 鈴木花子
+other_name: (none)
+
+1. DATE_TIME: 令和7年4月1日
+2. DATE_TIME: 令和7年3月15日
+3. ADDRESS: 新宿区歌舞伎町2-3-4
+4. PHONE: 03-5555-1234
+5. EMAIL: kaigo@city.shinjuku.lg.jp
+6. DATE_TIME: 昭和55年7月7日
+7. ADDRESS: 新宿区西新宿1-1-1
+
+---
+
+1: event_date
+2: document_date
+3: issuer_address
+4: issuer_phone
+5: issuer_email
+6: date_of_birth
+7: applicant_address
 ```
 
 ### 8.3 翻訳 Few-shot Example（MF-03 用）
@@ -681,7 +707,7 @@ WARNING: Failure to submit for 2 years will result in loss of eligibility
 | 変数 | 使用プロンプト | 生成元クラス |
 |------|--------------|------------|
 | `{few_shot_example}` | MF-02 | `PromptBuilder.FEW_SHOT_MF02`（ハードコード、9 フィールド 2 件） |
-| `{few_shot_example}` | EntityAnnotator | `PromptBuilder.FEW_SHOT_ENTITY_ANNOTATOR`（ハードコード、2 件） |
+| `{few_shot_example}` | EntityAnnotator | `PromptBuilder.FEW_SHOT_ENTITY_ANNOTATOR`（ハードコード、3 件） |
 | `{few_shot_example}` | MF-03 | `PromptBuilder.FEW_SHOT_MF03`（ハードコード、5 フィールド） |
 | `{issuer_name}` | EntityAnnotator | `reviewResult.issuerName ?: "(none)"` |
 | `{applicant_name}` | EntityAnnotator | `reviewResult.applicantName ?: "(none)"` |

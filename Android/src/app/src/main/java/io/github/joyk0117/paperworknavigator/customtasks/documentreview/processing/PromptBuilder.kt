@@ -487,6 +487,46 @@ Estimated Cost: ${"$"}2,500.00
 7: applicant_address
 8: other_phone
 9: fee
+
+===
+
+issuer_name: 新宿区役所
+applicant_name: 鈴木花子
+other_name: (none)
+
+1. DATE_TIME: 令和7年4月1日
+2. DATE_TIME: 令和7年3月15日
+3. ADDRESS: 新宿区歌舞伎町2-3-4
+4. PHONE: 03-5555-1234
+5. EMAIL: kaigo@city.shinjuku.lg.jp
+6. DATE_TIME: 昭和55年7月7日
+7. ADDRESS: 新宿区西新宿1-1-1
+
+Document text:
+介護保険 負担割合証（令和7年度）
+
+発行日: 令和7年3月15日
+
+氏名: 鈴木花子
+生年月日: 昭和55年7月7日
+住所: 新宿区西新宿1-1-1
+
+認定有効期間: 令和7年4月1日から
+
+お問い合わせ先: 新宿区役所介護保険課
+〒160-0001 新宿区歌舞伎町2-3-4
+電話: 03-5555-1234
+メール: kaigo@city.shinjuku.lg.jp
+
+---
+
+1: event_date
+2: document_date
+3: issuer_address
+4: issuer_phone
+5: issuer_email
+6: date_of_birth
+7: applicant_address
     """
 
     private val FEW_SHOT_MF02 = """

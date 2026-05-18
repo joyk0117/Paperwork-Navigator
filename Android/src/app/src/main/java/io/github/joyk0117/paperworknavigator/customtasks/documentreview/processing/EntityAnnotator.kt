@@ -88,7 +88,7 @@ class EntityAnnotator(private val llmHelper: LlmModelHelper) {
     private fun parseAnnotations(raw: String, annotatable: List<DetectedEntity>): Map<Int, String> {
         val result = mutableMapOf<Int, String>()
         for (line in raw.lines()) {
-            val trimmed = line.trim()
+            val trimmed = line.trim().replace('：', ':')  // normalize full-width colon (U+FF1A) emitted by Gemma on Japanese input
             val colonIdx = trimmed.indexOf(':')
             if (colonIdx == -1) continue
             val indexStr = trimmed.substring(0, colonIdx).trim()
