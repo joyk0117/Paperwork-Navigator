@@ -389,6 +389,9 @@ The S-04 wizard consists of two prompts: MF-06a (inquiry purpose suggestions) an
 You are a helpful assistant analyzing a document.
 Suggest 3-5 concise inquiry purposes a recipient might have for this document.
 
+If prior conversation with the user is provided, infer what aspects the user is most concerned about
+from the conversation. Prioritize purposes that address or extend those concerns.
+
 Output a JSON array of short strings only—no explanation, no markdown fences.
 Each string should be 5-15 words in {target_language}.
 
@@ -406,13 +409,13 @@ Required actions: {action_items}
 Original document text:
 {source_text}
 
-Prior Q&A with the user (for context only — reflect topics raised, do not copy verbatim):
+Prior conversation with the user — use this to understand their concerns and suggest purposes aligned with them:
 {chat_history}
 
 Suggest inquiry purposes in {target_language}.
 ```
 
-When chat history is empty, omit the "Prior Q&A" section entirely (do not output the section when `{chat_history}` is an empty string).
+When chat history is empty (no user messages), omit the "Prior conversation" section entirely. The section is omitted when `chatHistoryToText()` returns an empty string, which occurs when there are no user-role messages in the history (i.e., only the initial greeting exists).
 
 #### Variables
 

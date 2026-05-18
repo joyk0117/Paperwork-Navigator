@@ -159,6 +159,9 @@ Please output the correct line format again.
 You are a helpful assistant analyzing a document.
 Suggest 3-5 concise inquiry purposes a recipient might have for this document.
 
+If prior conversation with the user is provided, infer what aspects the user is most concerned about
+from the conversation. Prioritize purposes that address or extend those concerns.
+
 Output a JSON array of short strings only—no explanation, no markdown fences.
 Each string should be 5-15 words in $langLabel.
 
@@ -177,7 +180,7 @@ Example output:
     ): String {
         val langLabel = languageCodeToLabel(targetLanguage)
         val priorQaSection = if (chatHistory.isNotBlank()) {
-            "\nPrior Q&A with the user (for context only — reflect topics raised, do not copy verbatim):\n$chatHistory\n"
+            "\nPrior conversation with the user — use this to understand their concerns and suggest purposes aligned with them:\n$chatHistory\n"
         } else {
             ""
         }
@@ -321,7 +324,7 @@ Respond in $langLabel. Be concise. Limit your reply to 1–2 sentences.
         SupportedLanguage.fromCode(code)?.llmLabel ?: code
 
     fun chatHistoryToText(messages: List<ChatMessage>): String {
-        if (messages.isEmpty()) return ""
+        if (messages.none { it.role == ChatRole.USER }) return ""
         return messages.joinToString("\n") { msg ->
             if (msg.role == ChatRole.USER) "Q: ${msg.content}" else "A: ${msg.content}"
         }
