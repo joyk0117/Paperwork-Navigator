@@ -293,7 +293,7 @@ Help the user:
 2. Identify what they need to do and by when
 3. Clarify any points they want to share with an expert or an AI assistant
 
-Respond in $langLabel. Be concise and clear. Keep each response under 3 sentences.
+Respond in $langLabel. Be concise. Limit your reply to 1–2 sentences.
         """.trimIndent()
     }
 

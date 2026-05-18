@@ -504,24 +504,24 @@ MF-02・MF-03・MF-06・MF-07 は実際の Gemma 4 モデルを使わず、`LlmM
 | 前提 | `reviewResult.piiCandidates` に "山田太郎" あり（piiSpan の spanText として登録） |
 | 期待結果 | `initialize()` でモックに渡されるシステムプロンプトに `piiSpans[].spanText`（"山田太郎" 等）が含まれない。ただし `sourceText` はシステムプロンプトに含まれる（オンデバイス推論のため許容） |
 
-### TC-07-10: システムプロンプトに3文制限が含まれる
+### TC-07-10: システムプロンプトに応答制約が含まれる
 
 | 項目 | 内容 |
 |------|------|
 | 対象 | `PromptBuilder.mf07SystemPrompt()` |
 | 種別 | ユニット |
 | 手順 | 任意の `ReviewResult` と `targetLanguage` を渡して `mf07SystemPrompt()` を呼ぶ |
-| 期待結果 | 返り値のシステムプロンプトに `"Keep each response under 3 sentences."` が含まれる |
+| 期待結果 | 返り値のシステムプロンプトに `"Limit your reply to 1–2 sentences."` が含まれる |
 
-### TC-07-11: 典型的な質問への3文以内の応答（実機）
+### TC-07-11: 典型的な質問への1–2文の応答（実機）
 
 | 項目 | 内容 |
 |------|------|
 | 対象 | `DocumentChatSession.sendMessage()` |
 | 種別 | 手動（実機 Pixel 9、Gemma 4 E2B） |
 | 手順 | 1. 児童手当現況届を解析して S-02 を表示する<br>2. 「締め切りはいつですか？」を送信する<br>3. 「何を持参すれば良いですか？」を送信する |
-| 期待結果 | 各回答が3文以内である |
-| 備考 | プロンプト制約（`Keep each response under 3 sentences.`）が安全網としての `maxOutputTokens` を代替する（プロンプト仕様書 §5.1 注記参照） |
+| 期待結果 | 各回答が1–2文以内である |
+| 備考 | プロンプト制約（`Limit your reply to 1–2 sentences.`）が安全網としての `maxOutputTokens` を代替する（プロンプト仕様書 §7.1 注記参照） |
 
 ---
 
@@ -826,11 +826,11 @@ MF-02・MF-03・MF-06・MF-07 は実際の Gemma 4 モデルを使わず、`LlmM
 | 前提 | `EscalationPackageGenerator` が 30 秒以上応答しない（`GeneratingEscalation` 状態中） |
 | 期待結果 | 「解析に失敗しました。再試行してください」が S-02 上に表示される<br>（仕様書 §4.3: MF-06 タイムアウトは MF-02 と同じメッセージ）<br>`uiState` が `Review` に戻り、「引継ぎ用ファイル作成」ボタンが再度有効化される |
 
-### TC-ERR-04: MF-07 チャットタイムアウト（20 秒）
+### TC-ERR-04: MF-07 チャットタイムアウト（60 秒）
 
 | 項目 | 内容 |
 |------|------|
-| 前提 | `DocumentChatSession.sendMessage()` が 20 秒以上応答しない |
+| 前提 | `DocumentChatSession.sendMessage()` が 60 秒以上応答しない |
 | 期待結果 | チャット入力欄の上に「回答の生成に失敗しました。もう一度送信してください」が表示される<br>失敗したアシスタントメッセージが履歴に残らない |
 
 ### TC-ERR-05: MF-07 チャットセッション初期化失敗
