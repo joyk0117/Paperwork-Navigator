@@ -2126,6 +2126,47 @@ private fun EntityGroupedFields(reviewResult: ReviewResult) {
         )
     }
 
+    // ── 申請者連絡先 ────────────────────────────────────────────────────
+    reviewResult.detectedEntities
+        .filter { it.contextLabel == "applicant_address" && it.rawText.isNotBlank() }
+        .forEach { entity ->
+            ReviewBadgeItem(
+                icon = "📍",
+                label = stringResource(R.string.doc_review_label_applicant_address),
+                badgeColor = ReviewBadgeColor.GRAY,
+                content = entity.rawText,
+                trailingButton = DocumentIntentBuilder.mapsIntent(entity.rawText, null)?.let { intent ->
+                    { IntentIconButton("🗺", intent) }
+                },
+            )
+        }
+    reviewResult.detectedEntities
+        .filter { it.contextLabel == "applicant_phone" && it.rawText.isNotBlank() }
+        .forEach { entity ->
+            ReviewBadgeItem(
+                icon = "📞",
+                label = stringResource(R.string.doc_review_label_applicant_phone),
+                badgeColor = ReviewBadgeColor.GRAY,
+                content = entity.rawText,
+                trailingButton = DocumentIntentBuilder.phoneIntent(entity.rawText)?.let { intent ->
+                    { IntentIconButton("📞", intent) }
+                },
+            )
+        }
+    reviewResult.detectedEntities
+        .filter { it.contextLabel == "applicant_email" && it.rawText.isNotBlank() }
+        .forEach { entity ->
+            ReviewBadgeItem(
+                icon = "✉️",
+                label = stringResource(R.string.doc_review_label_applicant_email),
+                badgeColor = ReviewBadgeColor.GRAY,
+                content = entity.rawText,
+                trailingButton = DocumentIntentBuilder.emailIntent(entity.rawText)?.let { intent ->
+                    { IntentIconButton("✉️", intent) }
+                },
+            )
+        }
+
     // ── 金融情報 ────────────────────────────────────────────────────────
     val moneyLabelMap = mapOf(
         "benefit_amount" to stringResource(R.string.doc_review_label_benefit),
