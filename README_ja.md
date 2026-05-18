@@ -42,9 +42,9 @@ Paperwork Navigator はすべての推論を端末内で完結させることで
 
 ## デモ動画
 
-![デモ動画](https://img.youtube.com/vi/XgcFwhbReoA/hqdefault.jpg)
+![デモ動画](https://img.youtube.com/vi/wBUY6STuWnY/hqdefault.jpg)
 
-[YouTube で見る →](https://youtube.com/shorts/XgcFwhbReoA?feature=share)
+[YouTube で見る →](https://youtu.be/wBUY6STuWnY)
 
 ---
 
