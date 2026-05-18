@@ -40,6 +40,12 @@ Paperwork Navigator はすべての推論を端末内で完結させることで
 
 ---
 
+## デモ動画
+
+[![デモ動画](https://img.youtube.com/vi/XgcFwhbReoA/hqdefault.jpg)](https://youtube.com/shorts/XgcFwhbReoA?feature=share)
+
+---
+
 ## スクリーンショット
 
 <!-- TODO: 実機スクリーンショットをここに追加 -->
