@@ -12,8 +12,6 @@ object PiiMasker {
 
     fun mask(text: String, spans: List<PiiSpan>): MaskResult = applyMask(text, spans)
 
-    fun remask(text: String, spans: List<PiiSpan>): MaskResult = applyMask(text, spans)
-
     private fun applyMask(text: String, spans: List<PiiSpan>): MaskResult {
         val toMask = mutableListOf<PiiSpan>()
         val skipped = mutableListOf<PiiSpan>()

@@ -309,6 +309,7 @@ Rules:
 - Use ||| to separate multiple items in array fields.
 - Use | to separate sub-fields within an item.
 - Use (none) when a field has no value.
+- Strings enclosed in square brackets such as [Applicant name] or [■■■] are privacy placeholders. Copy them verbatim—do not translate or modify them.
 
 Example output:
 {few_shot_example}
@@ -375,6 +376,8 @@ Please output the correct line format again.
 - PiiSpan（スパン位置が変わるため）
 - `id` 系フィールド（`action_01` 等）
 - `warning.severity`（`high`/`medium`/`low` は多言語化不要）
+
+> **事前マスク**: 翻訳対象フィールドのテキストは LLM に渡す前に `PiiMasker.mask()` を適用し、PII スパンが一致する文字列をマスクトークン（`[Applicant name]` 等）に置換する。LLM はマスクトークンを不透明な文字列として翻訳後もそのまま保持するため、翻訳済みフィールドにも自動的にマスクが入る。
 
 ---
 

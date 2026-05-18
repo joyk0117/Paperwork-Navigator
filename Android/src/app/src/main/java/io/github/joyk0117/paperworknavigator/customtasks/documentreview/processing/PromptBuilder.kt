@@ -119,6 +119,7 @@ Rules:
 - Use ||| to separate multiple items in array fields.
 - Use | to separate sub-fields within an item.
 - Use (none) when a field has no value.
+- Strings enclosed in square brackets such as [Applicant name] or [■■■] are privacy placeholders. Copy them verbatim—do not translate or modify them.
 
 Example output:
 $fewShotExample
