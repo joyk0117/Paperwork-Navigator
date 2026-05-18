@@ -36,8 +36,8 @@ android {
     applicationId = "io.github.joyk0117.paperworknavigator"
     minSdk = 35
     targetSdk = 35
-    versionCode = 30
-    versionName = "1.0.13"
+    versionCode = 31
+    versionName = "1.0.15"
 
     // Needed for HuggingFace auth workflows.
     // Use the scheme of the "Redirect URLs" in HuggingFace app.
