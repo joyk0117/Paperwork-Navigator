@@ -499,6 +499,11 @@
   <string name="doc_review_label_applicant_phone" translatable="false">Applicant phone</string>
   <string name="doc_review_label_applicant_email" translatable="false">Applicant email</string>
   <string name="doc_review_label_dob" translatable="false">Date of birth</string>
+  <string name="doc_review_label_detected_address" translatable="false">Address</string>
+  <string name="doc_review_label_detected_phone" translatable="false">Phone</string>
+  <string name="doc_review_label_detected_email" translatable="false">Email</string>
+  <string name="doc_review_label_detected_date" translatable="false">Date</string>
+  <string name="doc_review_label_detected_amount" translatable="false">Amount</string>
   <string name="doc_review_pii_section_title" translatable="false">🔒 Personal information (tap to edit)</string>
   <string name="doc_review_pii_unmatched_warning" translatable="false">Some items could not be masked</string>
   <string name="doc_review_pii_not_masked" translatable="false">Not masked</string>

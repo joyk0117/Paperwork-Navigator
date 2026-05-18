@@ -171,6 +171,8 @@ mergeEntities
 - `unknown` が返ったエンティティ → `contextLabel = null`
 - パース失敗・タイムアウト時 → 全エンティティを `contextLabel = null` のままフォールバック（リトライなし）
 
+`contextLabel = null` のエンティティは S-02 の「フォールバック表示」セクションにエンティティ型（ADDRESS / PHONE / EMAIL / MONEY / DATE_TIME）ベースで表示される。これにより EntityAnnotator が失敗した場合でも ML Kit が検出した情報を S-02 から完全に失わない。
+
 ---
 
 ## 4. PII Tier 静的定義
