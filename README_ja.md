@@ -5,6 +5,9 @@
 [![Min SDK](https://img.shields.io/badge/Min%20SDK-35-brightgreen.svg)]()
 [![LiteRT-LM](https://img.shields.io/badge/LiteRT--LM-0.11.0-blue.svg)]()
 [![Gemma](https://img.shields.io/badge/Gemma-4%20E2B%2FE4B-orange.svg)]()
+[![GitHub Release](https://img.shields.io/github/v/release/joyk0117/Paperwork-Navigator)](https://github.com/joyk0117/Paperwork-Navigator/releases/latest)
+
+> **[最新APKをダウンロード](https://github.com/joyk0117/Paperwork-Navigator/releases/latest/download/app-debug.apk)**
 
 **母語以外の言語で書かれた書類を受け取ったすべての人のための、プライバシーファーストな書類ナビゲーター。**
 受け取った書類を端末上だけで読み取り・解析・翻訳し、PII をマスクしたうえで専門家や外部 AI への相談コンテキストを生成します。**個人情報は一切端末の外に出ません。**

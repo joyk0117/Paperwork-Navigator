@@ -5,6 +5,9 @@
 [![Min SDK](https://img.shields.io/badge/Min%20SDK-35-brightgreen.svg)]()
 [![LiteRT-LM](https://img.shields.io/badge/LiteRT--LM-0.11.0-blue.svg)]()
 [![Gemma](https://img.shields.io/badge/Gemma-4%20E2B%2FE4B-orange.svg)]()
+[![GitHub Release](https://img.shields.io/github/v/release/joyk0117/Paperwork-Navigator)](https://github.com/joyk0117/Paperwork-Navigator/releases/latest)
+
+> **[Download latest APK](https://github.com/joyk0117/Paperwork-Navigator/releases/latest/download/app-debug.apk)**
 
 **A privacy-first document navigator for anyone who receives paperwork written in a language that is not their native one.**
 It reads, analyzes, and translates documents entirely on-device, then generates consultation context with PII masked for experts or external AI tools. **No personal information ever leaves the device.**
