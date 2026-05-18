@@ -372,6 +372,8 @@ Please output the correct line format again.
 - `id` fields (e.g. `action_01`)
 - `warning.severity` (`high`/`medium`/`low` do not require multilingual conversion)
 
+> **Pre-masking**: Before passing the translation target fields to the LLM, apply `PiiMasker.mask()` to replace any PII span text with mask tokens (e.g. `[Applicant name]`). The LLM treats mask tokens as opaque strings and preserves them in the translated output, so translated fields are automatically masked.
+
 ---
 
 ## 6. MF-06: Inquiry Document Prompt

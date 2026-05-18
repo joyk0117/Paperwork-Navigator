@@ -376,6 +376,8 @@ Please output the correct line format again.
 - `id` 系フィールド（`action_01` 等）
 - `warning.severity`（`high`/`medium`/`low` は多言語化不要）
 
+> **事前マスク**: 翻訳対象フィールドのテキストは LLM に渡す前に `PiiMasker.mask()` を適用し、PII スパンが一致する文字列をマスクトークン（`[Applicant name]` 等）に置換する。LLM はマスクトークンを不透明な文字列として翻訳後もそのまま保持するため、翻訳済みフィールドにも自動的にマスクが入る。
+
 ---
 
 ## 6. MF-06: 問い合わせ文書プロンプト

@@ -1,5 +1,6 @@
 ﻿package io.github.joyk0117.paperworknavigator.customtasks.documentreview.processing
 
+import io.github.joyk0117.paperworknavigator.customtasks.documentreview.model.PiiSpan
 import io.github.joyk0117.paperworknavigator.customtasks.documentreview.model.ReviewResult
 import io.github.joyk0117.paperworknavigator.customtasks.documentreview.model.Translation
 import io.github.joyk0117.paperworknavigator.customtasks.documentreview.model.TranslatedActionItem
@@ -31,11 +32,14 @@ class Translator(private val llmHelper: LlmModelHelper) {
         model: Model,
         reviewResult: ReviewResult,
         targetLanguage: String,
+        piiSpans: List<PiiSpan> = emptyList(),
     ): ReviewResult {
         if (model.instance == null) throw TranslationError.ModelNotInitialized
 
         val sourceLanguage = reviewResult.sourceLanguage
-        val fieldsText = buildFieldsText(reviewResult)
+        val rawFieldsText = buildFieldsText(reviewResult)
+        val fieldsText = if (piiSpans.isEmpty()) rawFieldsText
+                         else PiiMasker.mask(rawFieldsText, piiSpans).maskedText
 
         var lastParseError: String? = null
         for (attempt in 0 until MAX_ATTEMPTS) {

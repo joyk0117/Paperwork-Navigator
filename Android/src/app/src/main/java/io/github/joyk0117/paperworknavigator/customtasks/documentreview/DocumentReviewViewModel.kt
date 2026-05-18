@@ -110,7 +110,7 @@ class DocumentReviewViewModel @Inject constructor(
     private val chatSession = DocumentChatSession(llmModelHelper)
 
     // Per-analysis state kept in the ViewModel between state transitions
-    private var sourceText: String = ""          // original extracted text (needed for remask)
+    private var sourceText: String = ""          // original extracted text
     private var currentDocId: String? = null
     private var currentTargetLanguage: String = "en"
     private var activeModel: Model? = null
@@ -277,6 +277,7 @@ class DocumentReviewViewModel @Inject constructor(
                         model = model,
                         reviewResult = state.reviewResult,
                         targetLanguage = language,
+                        piiSpans = state.piiSpans,
                     )
                 } catch (e: Exception) {
                     Log.w(TAG, "Translation failed: ${e.message}")

@@ -137,10 +137,10 @@ class PiiMaskerTest {
         assertFalse(result.maskedText.contains("昭和60年1月1日"))
     }
 
-    // ── TC-05-09: remask でユーザー操作後の再マスク ───────────────────────────
+    // ── TC-05-09: ユーザー操作後の再マスク（mask() を再呼び出し） ─────────────
 
     @Test
-    fun remask_reflectsUpdatedOverride() {
+    fun mask_reflectsUpdatedOverride() {
         val originalText = "氏名: 山田太郎 口座: 1234567"
         val s1 = span(id = "pii_01", spanText = "山田太郎", maskRecommended = true)
         val s2 = span(id = "pii_02", spanText = "1234567", maskRecommended = true, category = "account")
@@ -151,7 +151,7 @@ class PiiMaskerTest {
 
         // User toggles off 口座
         val s2Excluded = s2.copy(userOverride = false)
-        val second = PiiMasker.remask(originalText, listOf(s1, s2Excluded))
+        val second = PiiMasker.mask(originalText, listOf(s1, s2Excluded))
         assertEquals(1, second.appliedSpans.size)
         assertEquals("pii_01", second.appliedSpans[0].id)
         assertTrue(second.maskedText.contains("1234567"))
