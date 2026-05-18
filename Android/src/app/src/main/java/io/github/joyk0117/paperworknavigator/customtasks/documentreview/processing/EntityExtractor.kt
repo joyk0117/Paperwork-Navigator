@@ -83,6 +83,7 @@ object EntityExtractor {
                         val typeLabel = entityTypeLabel(entity.type)
                         val staticLabel = staticContextLabel(entity.type)
                         val metadata = buildMetadata(entity)
+                        Log.d(TAG, "ML Kit detected: type=$typeLabel rawText=\"$rawText\"")
                         detectedEntities.add(
                             DetectedEntity(
                                 type = typeLabel,

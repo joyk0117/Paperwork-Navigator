@@ -197,6 +197,7 @@ class DocumentReviewViewModel @Inject constructor(
                         issuerName = rawReviewResult.issuerName,
                         applicantName = rawReviewResult.applicantName,
                         otherName = rawReviewResult.otherName,
+                        sourceText = text,
                     )
                 }
 

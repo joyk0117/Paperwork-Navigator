@@ -384,12 +384,16 @@ $fewShotExample
         applicantName: String?,
         otherName: String?,
         numberedEntities: String,
+        sourceText: String,
     ): String = """
 issuer_name: ${issuerName ?: "(none)"}
 applicant_name: ${applicantName ?: "(none)"}
 other_name: ${otherName ?: "(none)"}
 
 $numberedEntities
+
+Document text:
+$sourceText
 
 Label each entity.
     """.trimIndent()

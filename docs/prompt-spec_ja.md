@@ -257,6 +257,9 @@ other_name: {other_name}
 
 {numbered_entities}
 
+Document text:
+{source_text}
+
 Label each entity.
 ```
 
@@ -269,13 +272,14 @@ Label each entity.
 | `{applicant_name}` | `reviewResult.applicantName ?: "(none)"` |
 | `{other_name}` | `reviewResult.otherName ?: "(none)"` |
 | `{numbered_entities}` | `"${i+1}. ${entity.type}: ${entity.rawText}"` を改行で結合（DATE_TIME / ADDRESS / PHONE / EMAIL / MONEY のみ） |
+| `{source_text}` | `DocumentReviewViewModel.sourceText`（TextExtractor が抽出した生テキスト、8,000 文字以内にトリム済み）。オンデバイス推論のため raw テキストを渡すことは許容（MF-02 と同様） |
 
 ### 4.4 パース・フォールバック方針
 
 - 出力形式: `{index}: {label}` の行（1 件 1 行）
 - 許容ラベルは `ALLOWED_LABELS` マップで型ごとに定義（`§4.1 System Prompt` 参照）
 - `unknown` が返ったエンティティ → `contextLabel = null`
-- パース失敗・タイムアウト（60 秒）時 → 全エンティティを `contextLabel = null` のままフォールバック（リトライなし）
+- パース失敗・タイムアウト（120 秒）時 → 全エンティティを `contextLabel = null` のままフォールバック（リトライなし）
 
 ---
 
