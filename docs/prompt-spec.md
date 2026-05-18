@@ -515,10 +515,10 @@ Help the user:
 2. Identify what they need to do and by when
 3. Clarify any points they want to share with an expert or an AI assistant
 
-Respond in {target_language}. Be concise and clear. Keep each response under 3 sentences.
+Respond in {target_language}. Be concise. Limit your reply to 1–2 sentences.
 ```
 
-> **Regarding maxOutputTokens**: The Kotlin API of LiteRT-LM 0.10.0 (`SamplerConfig`, `ConversationConfig`) has no parameters for per-call token limits. The `maxOutputTokens` safety net is substituted by prompt constraints (`Keep each response under 3 sentences.`).
+> **Regarding maxOutputTokens**: The Kotlin API of LiteRT-LM 0.11.0 (`SamplerConfig`, `ConversationConfig`) has no parameters for per-call token limits. The `maxOutputTokens` safety net is substituted by prompt constraints (`Limit your reply to 1–2 sentences.`).
 
 ### 7.2 Variables
 
@@ -737,8 +737,8 @@ Comprehensive list of variables to be embedded in each prompt during implementat
 | Initial message language | Matches `target_language` | Automated (TC-07-02) |
 | No original PII in responses | `spanText` strings not present in response | Manual verification |
 | Time to first token | Within 3 seconds | TC-PERF-05 |
-| 3-sentence limit in system prompt | `mf07SystemPrompt()` output contains `"Keep each response under 3 sentences."` | Automated (TC-07-10) |
-| Responses to typical questions in 3 sentences or less | Questions like `"When is the deadline?"` or `"What should I bring?"` answered in 3 sentences or fewer | Manual verification (TC-07-11) |
+| Response constraint in system prompt | `mf07SystemPrompt()` output contains `"Limit your reply to 1–2 sentences."` | Automated (TC-07-10) |
+| Responses to typical questions in 1–2 sentences | Questions like `"When is the deadline?"` or `"What should I bring?"` answered in 1–2 sentences | Manual verification (TC-07-11) |
 
 ### 10.5 EntityAnnotator Evaluation
 
@@ -777,5 +777,6 @@ Both E2B and E4B can be manually selected by the user in Model Manager. No autom
 *v0.2.1: Removed MF-06b (missing information question list generation). On-device verification found it not useful. Simplified S-04 to single step. Updated variable reference and evaluation criteria.*
 *v0.2.2: Removed document and language restrictions. Removed "Japanese document" from system prompts for MF-02/03/06/07/08 for multilingual document support. Added SOURCE_LANGUAGE field to MF-02 formally (14 fields). Changed chat initial language from fixed Japanese to document's original language (sourceLanguage).*
 *v0.2.3: Added `Keep each response under 3 sentences.` to MF-07 system prompt (suppress long responses, reduce 20-second timeout likelihood). LiteRT-LM 0.10.0 Kotlin API lacks per-call maxOutputTokens, so use prompt constraints only. Added note to §5.1.*
+*v0.2.5: Extended MF-07 chat timeout from 20 seconds to 60 seconds (aligned with Translator/OcrCorrector). Strengthened response constraint from `Keep each response under 3 sentences.` to `Limit your reply to 1–2 sentences.` (3 sentences in Japanese can exceed 150 chars). Updated §7.1 system prompt, §7.1 maxOutputTokens note, §10.4 TC-07-10/TC-07-11.*
 *v0.2.4: Updated MF-02 to 16 fields (LOCATION → LOCATIONS for multiple, WARNINGS → WARNING single, added ISSUER_ADDRESS, EVENT_DATES, EXTRA_PII). Merged old MF-08 into EXTRA_PII, discontinued independent LLM step. Changed MF-03 output from JSON to line format (5 fields). Added MF-06 (escalation) subsection. Updated §7 MF-08 deprecation note, §8 few-shot examples, §9 variable reference, §10 evaluation criteria.*
 *v0.3.0: Reduced MF-02 from 16 to 9 fields (DOC_NAME, ISSUER_NAME, APPLICANT_NAME, OTHER_NAME, IMPORTANCE, SUMMARY, ACTION_ITEMS, REQUIRED_ITEMS, WARNING). Transferred extraction responsibility for dates, addresses, phones, emails, amounts, URLs to ML Kit EntityExtractor + EntityAnnotator. Added §4 EntityAnnotator section (system prompt, user message, ALLOWED_LABELS, parse spec). Added EntityAnnotator samples to §8 few-shot examples. Updated §10.1 evaluation criteria to 9-field MF-02 (removed DEADLINE_DATE row). Completely revised §10.5 from EXTRA_PII (old MF-08) to EntityAnnotator evaluation criteria.*

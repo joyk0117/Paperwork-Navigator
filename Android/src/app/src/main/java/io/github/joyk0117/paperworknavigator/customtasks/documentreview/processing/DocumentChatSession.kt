@@ -13,7 +13,7 @@ import kotlinx.coroutines.withTimeout
 
 private const val MAX_TURNS = 10        // 10 Q&A pairs = 20 messages
 private const val MAX_TOTAL_CHARS = 4_000
-private const val CHAT_TIMEOUT_MS = 20_000L
+private const val CHAT_TIMEOUT_MS = 60_000L
 
 class DocumentChatSession(private val llmHelper: LlmModelHelper) {
 

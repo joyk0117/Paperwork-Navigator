@@ -62,7 +62,7 @@ MF-02, MF-03, MF-06, and MF-07 are unit-tested using mocked `LlmModelHelper` wit
 | Unit Test JVM | JDK 17 |
 | Mock | MockK or Mockito-Kotlin |
 | Test PDF | `edogawa_R7_genkyo_kinyuurei.pdf` (with text layer) |
-| Timeout Test Implementation | Use `kotlinx.coroutines.test.TestCoroutineScheduler.advanceTimeBy()` to advance virtual time instead of actually waiting 150/60/30/20 seconds (to avoid slowing down CI), or substitute with mock throwing timeout exceptions immediately |
+| Timeout Test Implementation | Use `kotlinx.coroutines.test.TestCoroutineScheduler.advanceTimeBy()` to advance virtual time instead of actually waiting 150/60/30 seconds (to avoid slowing down CI), or substitute with mock throwing timeout exceptions immediately |
 
 ---
 
@@ -504,24 +504,24 @@ MF-02, MF-03, MF-06, and MF-07 are unit-tested using mocked `LlmModelHelper` wit
 | Prerequisite | `reviewResult.piiCandidates` has "山田太郎" (registered as piiSpan's spanText) |
 | Expected Result | System prompt passed to mock does not include `piiSpans[].spanText` ("山田太郎" etc.). However, `sourceText` is included in system prompt (permitted for on-device inference) |
 
-### TC-07-10: System Prompt Includes 3-Sentence Limit
+### TC-07-10: System Prompt Includes Response Constraint
 
 | Item | Content |
 |------|---------|
 | Target | `PromptBuilder.mf07SystemPrompt()` |
 | Type | Unit |
 | Procedure | Call `mf07SystemPrompt()` with arbitrary `ReviewResult` and `targetLanguage` |
-| Expected Result | Return value system prompt includes `"Keep each response under 3 sentences."` |
+| Expected Result | Return value system prompt includes `"Limit your reply to 1–2 sentences."` |
 
-### TC-07-11: Typical Question with Response Under 3 Sentences (On-Device)
+### TC-07-11: Typical Question with Response in 1–2 Sentences (On-Device)
 
 | Item | Content |
 |------|---------|
 | Target | `DocumentChatSession.sendMessage()` |
 | Type | Manual (on-device Pixel 9, Gemma 4 E2B) |
 | Procedure | 1. Analyze 児童手当現況届 and display S-02<br>2. Send "締め切りはいつですか？"<br>3. Send "何を持参すれば良いですか？" |
-| Expected Result | Each answer is under 3 sentences |
-| Note | Prompt constraint (`Keep each response under 3 sentences.`) serves as safety net replacing `maxOutputTokens` (Prompt Specification §5.1 note) |
+| Expected Result | Each answer is 1–2 sentences |
+| Note | Prompt constraint (`Limit your reply to 1–2 sentences.`) serves as safety net replacing `maxOutputTokens` (Prompt Specification §7.1 note) |
 
 ---
 
@@ -826,11 +826,11 @@ MF-02, MF-03, MF-06, and MF-07 are unit-tested using mocked `LlmModelHelper` wit
 | Prerequisite | `EscalationPackageGenerator` does not respond for 30+ seconds (in `GeneratingEscalation` state) |
 | Expected Result | "Analysis failed. Please retry." displayed on S-02<br>(Specification §4.3: MF-06 timeout uses same message as MF-02)<br>`uiState` returns to `Review` and "Create Escalation File" button re-enabled |
 
-### TC-ERR-04: MF-07 Chat Timeout (20 seconds)
+### TC-ERR-04: MF-07 Chat Timeout (60 seconds)
 
 | Item | Content |
 |------|---------|
-| Prerequisite | `DocumentChatSession.sendMessage()` does not respond for 20+ seconds |
+| Prerequisite | `DocumentChatSession.sendMessage()` does not respond for 60+ seconds |
 | Expected Result | "Failed to generate answer. Please send again." displayed above chat input<br>Failed assistant message not retained in history |
 
 ### TC-ERR-05: MF-07 Chat Session Initialization Failure
