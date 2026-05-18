@@ -60,6 +60,7 @@ private val DISPLAY_MF02_KEYS = setOf(
 
 private const val TAG = "DocumentReviewViewModel"
 private val DOC_ID_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
+internal const val LLM_INPUT_MAX_CHARS = 16_000
 
 // ─── ViewModel ────────────────────────────────────────────────────────────────
 
@@ -155,11 +156,13 @@ class DocumentReviewViewModel @Inject constructor(
                 // ML Kit ネイティブメモリを解放してから Gemma 4 を起動する（#95, #102 参照）
                 System.gc()
 
+                val llmText = text.take(LLM_INPUT_MAX_CHARS)
+
                 // Accumulates raw LLM output across onProgress calls (inference thread only)
                 val partialBuffer = StringBuilder()
                 val rawReviewResult = mutex.withLock {
                     try {
-                        fieldExtractor.extract(model = model, text = text, sourceLanguage = detectedLanguage, onProgress = { token ->
+                        fieldExtractor.extract(model = model, text = llmText, sourceLanguage = detectedLanguage, onProgress = { token ->
                             partialBuffer.append(token)
                             if ('\n' in token) {
                                 val raw = partialBuffer.toString()
@@ -337,7 +340,7 @@ class DocumentReviewViewModel @Inject constructor(
             }
         }
         is DocumentInput.RawText -> {
-            if (input.text.length > TextExtractor.MAX_CHARS) {
+            if (input.text.length > LLM_INPUT_MAX_CHARS) {
                 _uiState.value = DocumentReviewUiState.Error(R.string.doc_review_error_too_long)
                 null
             } else {

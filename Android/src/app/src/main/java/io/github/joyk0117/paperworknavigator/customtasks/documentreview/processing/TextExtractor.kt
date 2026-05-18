@@ -10,7 +10,6 @@ import kotlinx.coroutines.withContext
 
 object TextExtractor {
 
-    internal const val MAX_CHARS = 8_000
     private val PDF_MAGIC = "%PDF".toByteArray(Charsets.ISO_8859_1)
 
     suspend fun extract(context: Context, uri: Uri): String = withContext(Dispatchers.IO) {
@@ -80,10 +79,10 @@ object TextExtractor {
 
     // Internal for unit testing
     internal fun readFromStream(stream: InputStream): String =
-        stream.bufferedReader(Charsets.UTF_8).readText().take(MAX_CHARS)
+        stream.bufferedReader(Charsets.UTF_8).readText()
 
     internal fun joinPageTexts(pageTexts: List<String>): String =
-        pageTexts.joinToString("\n\n").take(MAX_CHARS)
+        pageTexts.joinToString("\n\n")
 
     // Normalize horizontal whitespace (tabs, non-breaking spaces, etc.) to a single regular space.
     // PDF text extraction can yield tab characters as word separators instead of U+0020,

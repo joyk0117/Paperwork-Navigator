@@ -28,7 +28,7 @@
 - システムプロンプトは英語で記述（LLM の多言語能力を活かし、あらゆる言語の書類に対して均質な出力品質を保つ）
 - ユーザーメッセージに書類テキスト（任意言語）を渡し、出力形式はモデルの能力に合わせて選択する（後述）
 - few-shot example を含めることで精度を安定させる
-- コンテキスト長の上限: 入力テキストは 8,000 文字以内にトリム（仕様書 §9.4）
+- コンテキスト長の上限: 入力テキストは 16,000 文字以内にトリム（ViewModel 側で実施、仕様書 §9.4）
 
 ### 1.1 MF-02 出力形式の選択経緯
 
@@ -90,7 +90,7 @@ List any transcription errors found.
 
 | 変数 | 説明 |
 |------|------|
-| `{ocr_text}` | ML Kit OCR が出力したテキスト（`TextExtractor.MAX_CHARS` でトリム済み） |
+| `{ocr_text}` | ML Kit OCR が出力したテキスト（`LLM_INPUT_MAX_CHARS` でトリム済み） |
 
 ### 2.4 出力形式と Kotlin 側パース
 
@@ -169,7 +169,7 @@ Analyze the following document text:
 | 変数 | 説明 | 参照 |
 |------|------|------|
 | `{few_shot_example}` | §8 の few-shot example（行形式） | [Few-shot Example](#8-few-shot-examplemf-02--entityannotator--mf-03-用) |
-| `{document_text}` | TextExtractor が抽出したテキスト（8,000 文字以内にトリム済み） | — |
+| `{document_text}` | TextExtractor が抽出したテキスト（16,000 文字以内にトリム済み） | — |
 
 ### 3.4 リトライ方針
 
@@ -272,7 +272,7 @@ Label each entity.
 | `{applicant_name}` | `reviewResult.applicantName ?: "(none)"` |
 | `{other_name}` | `reviewResult.otherName ?: "(none)"` |
 | `{numbered_entities}` | `"${i+1}. ${entity.type}: ${entity.rawText}"` を改行で結合（DATE_TIME / ADDRESS / PHONE / EMAIL / MONEY のみ） |
-| `{source_text}` | `DocumentReviewViewModel.sourceText`（TextExtractor が抽出した生テキスト、8,000 文字以内にトリム済み）。オンデバイス推論のため raw テキストを渡すことは許容（MF-02 と同様） |
+| `{source_text}` | `DocumentReviewViewModel.sourceText`（TextExtractor が抽出した生テキスト、16,000 文字以内にトリム済み）。オンデバイス推論のため raw テキストを渡すことは許容（MF-02 と同様） |
 
 ### 4.4 パース・フォールバック方針
 
@@ -423,7 +423,7 @@ Suggest inquiry purposes in {target_language}.
 | `{doc_name}` | `reviewResult.docName` | — |
 | `{summary}` | `reviewResult.translation.summary` または `reviewResult.summaryJa` | — |
 | `{action_items}` | 番号付きリスト形式（翻訳済みフィールド優先） | — |
-| `{source_text}` | `DocumentReviewViewModel.sourceText`（TextExtractor が抽出した生テキスト、8,000 文字以内にトリム済み）。オンデバイス推論のため raw テキストを渡すことは許容（MF-02 と同様） | — |
+| `{source_text}` | `DocumentReviewViewModel.sourceText`（TextExtractor が抽出した生テキスト、16,000 文字以内にトリム済み）。オンデバイス推論のため raw テキストを渡すことは許容（MF-02 と同様） | — |
 | `{chat_history}` | `DocumentChatSession.getChatHistory()` を `Q:` / `A:` 形式に変換したテキスト。空の場合はセクション自体を省略 | — |
 
 #### エラーハンドリング
@@ -531,7 +531,7 @@ Respond in {target_language}. Be concise and clear. Keep each response under 3 s
 | `{action_items}` | 番号付きリスト（翻訳済みフィールド優先） | プレーンテキスト |
 | `{required_items}` | 番号付きリスト（翻訳済みフィールド優先） | プレーンテキスト |
 | `{warnings}` | 番号付きリスト（翻訳済みフィールド優先） | プレーンテキスト |
-| `{source_text}` | `DocumentReviewViewModel.sourceText`（TextExtractor が抽出した生テキスト、8,000 文字以内にトリム済み）。オンデバイス推論のため raw テキストを渡すことは許容（MF-02 と同様） | 文字列 |
+| `{source_text}` | `DocumentReviewViewModel.sourceText`（TextExtractor が抽出した生テキスト、16,000 文字以内にトリム済み）。オンデバイス推論のため raw テキストを渡すことは許容（MF-02 と同様） | 文字列 |
 | `{target_language}` | `reviewResult.translation?.language ?: reviewResult.sourceLanguage` → 英語表記（§5.5 の表を使用）。翻訳済みならその言語、未翻訳なら書類の原文言語（`sourceLanguage`）。翻訳完了時に再初期化するため常に正しい言語が渡される | 文字列 |
 
 > `{deadline_note}` が null（期限なし書類）の場合は `"None"` を埋め込む。
@@ -694,7 +694,7 @@ WARNING: Failure to submit for 2 years will result in loss of eligibility
 | `{deadline_note}` | MF-07 | `DocumentChatSession`（翻訳済み優先、null → `"None"`） |
 | `{required_items}` | MF-07 | `DocumentChatSession`（番号付きリスト形式） |
 | `{warnings}` | MF-07 | `DocumentChatSession`（番号付きリスト形式） |
-| `{source_text}` | MF-07 / MF-06a | `DocumentReviewViewModel.sourceText`（TextExtractor が抽出した生テキスト、8,000 文字以内にトリム済み） |
+| `{source_text}` | MF-07 / MF-06a | `DocumentReviewViewModel.sourceText`（TextExtractor が抽出した生テキスト、16,000 文字以内にトリム済み） |
 | `{masked_text}` | MF-06 | `MaskResult.maskedText` |
 | `{masked_categories}` | MF-06 | `MaskResult.appliedSpans` のカテゴリ一覧（カンマ区切り） |
 | `{user_notes}` | MF-06 | S-04 ユーザー入力メモ（null → `"(none)"`） |

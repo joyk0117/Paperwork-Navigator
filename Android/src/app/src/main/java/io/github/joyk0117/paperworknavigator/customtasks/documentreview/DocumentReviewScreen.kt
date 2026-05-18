@@ -334,7 +334,7 @@ fun DocumentReviewScreen(
                                     bitmaps.isNotEmpty() -> {
                                         pastedText = bitmaps.map { bmp ->
                                             ImageTextExtractor.extractFromBitmap(bmp, lang)
-                                        }.joinToString("\n\n").take(TextExtractor.MAX_CHARS)
+                                        }.joinToString("\n\n")
                                         ocrSourceBitmaps = bitmaps
                                     }
                                     uris.isNotEmpty() -> {
@@ -350,7 +350,7 @@ fun DocumentReviewScreen(
                                         }
                                         pastedText = loadedBitmaps.map { bmp ->
                                             ImageTextExtractor.extractFromBitmap(bmp, lang)
-                                        }.joinToString("\n\n").take(TextExtractor.MAX_CHARS)
+                                        }.joinToString("\n\n")
                                         ocrSourceBitmaps = loadedBitmaps
                                     }
                                     else -> return@launch
