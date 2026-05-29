@@ -1,9 +1,10 @@
 # Paperwork Navigator Test Specification
 
-> Version: 0.1.0
+> Version: 0.2.0
 > Created: 2026-05-07
+> Last updated: 2026-05-29 (§1.2 out-of-scope list updated: camera capture/OCR, cloud LLM escalation, and multi-document support moved into MVP scope)
 > Target: MVP (P1 Features MF-01–MF-07)
-> Based on: Implementation Specification v0.1.0
+> Based on: Implementation Specification v0.3.0
 
 ---
 
@@ -42,10 +43,7 @@
 
 ### 1.2 Out of Scope (Non-MVP)
 
-- Camera capture and OCR processing
-- Cloud LLM escalation
 - Encrypted storage
-- Multi-document cross-search
 
 ### 1.3 LLM-Dependent Processing Test Strategy
 
