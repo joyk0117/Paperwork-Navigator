@@ -60,19 +60,17 @@ Paperwork Navigator removes that tradeoff by completing the full inference flow 
 
 **2. Download the model (first time only)** — When you launch the app, the Model Manager screen opens. Select **Gemma 4 E2B** (or **E4B** for higher accuracy) and download it. After that, the app works fully offline.
 
-**3. Select the task** — Tap **Document Review** on the home screen.
+**3. Import a document** — On the input screen, choose PDF, camera, gallery, or share from another app to load the document.
 
-**4. Import a document** — On the input screen, choose PDF, camera, gallery, or share from another app to load the document.
+**4. Run analysis** — After loading, analysis starts automatically on-device. When it finishes, the app navigates to the review screen.
 
-**5. Run analysis** — After loading, analysis starts automatically on-device. When it finishes, the app navigates to the review screen.
-
-**6. Review screen operations** — Deadlines, required actions, and warnings are shown by category. From each item you can:
+**5. Review screen operations** — Deadlines, required actions, and warnings are shown by category. From each item you can:
 - **Add to calendar** — Register a deadline in your calendar app
 - **View on map** — Open the issuer's address in a maps app
 - **Translate** — Translate into 15 languages displayed side by side with the original
 - **Chat** — Ask Gemma 4 questions about the document content
 
-**7. Generate inquiry context (optional)** — From the review screen, open the inquiry context generator to produce PII-masked text, then send it via the Android share sheet to external AI tools or professionals.
+**6. Generate inquiry context (optional)** — From the review screen, open the inquiry context generator to produce PII-masked text, then send it via the Android share sheet to external AI tools or professionals.
 
 ---
 
