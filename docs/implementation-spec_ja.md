@@ -1,8 +1,8 @@
 # Paperwork Navigator 実装仕様書
 
-> バージョン: 0.3.0
+> バージョン: 0.4.0
 > 作成日: 2026-05-07
-> 最終更新: 2026-05-18（PiiMasker スパンマッチング: 各文字を Regex.escape() でエスケープ・空白のみ spanText を unmatchedSpans に記録 — §7.5）
+> 最終更新: 2026-05-30（入力テキスト上限を 8,000 → 16,000 文字に修正、MF-07 タイムアウトを 20 → 60 秒に修正、§9.4 から MF-06c 行を削除 — §4.3, §6.1, §6.2, §7.1, §7.2, §9.4）
 > 対象: MVP（P1 機能 MF-01〜MF-07）
 
 ---
@@ -710,9 +710,9 @@ enum class ProcessingStep(@StringRes val labelRes: Int) {
 | MF-06 目的候補生成失敗（推論 #3） | 候補ボタンを非表示にし、フリーテキスト入力のみ表示する |
 | MF-02 の行形式パースエラー | 最大2回リトライ（合計3回）。失敗時はエラー表示 |
 | モデル未ダウンロード | ModelManager 画面へ誘導 |
-| 入力テキスト上限超過 | 「書類が長すぎます（上限 8,000 文字）」を表示 |
+| 入力テキスト上限超過 | 「書類が長すぎます（上限 16,000 文字）」を表示 |
 | MF-03 翻訳失敗 | `isTranslating` を false に戻し、翻訳バーに「翻訳に失敗しました。再試行してください」を表示する。日本語のみの表示を維持する |
-| MF-07 チャット推論タイムアウト（20秒） | チャット入力欄の上に「回答の生成に失敗しました。もう一度送信してください」を表示。失敗したアシスタントメッセージは履歴に残さない |
+| MF-07 チャット推論タイムアウト（60秒） | チャット入力欄の上に「回答の生成に失敗しました。もう一度送信してください」を表示。失敗したアシスタントメッセージは履歴に残さない |
 | MF-07 チャットセッション初期化失敗 | チャットセクションを非表示にし、S-02 のレビュー・問い合わせ機能は引き続き使用可能にする |
 
 ---
@@ -987,13 +987,13 @@ data class InquiryRecipient(
 - ユーザーメッセージに書類テキスト（任意言語）を渡し、出力は **行形式（Key-Value lines）** に固定する（MF-02 / MF-03 共通）
 - 実機検証により LiteRT-LM 0.11.0 Kotlin API には Constrained Decoding が存在せず、複雑なネスト JSON では key-as-value 崩壊が発生することが確認された。MF-02・MF-03 ともに行形式を採用する
 - few-shot example を含めることで精度を安定させる
-- コンテキスト長の上限: 入力テキストは 8,000 文字以内にトリム（§9.4）
+- コンテキスト長の上限: 入力テキストは 16,000 文字以内にトリム（§9.4）
 
 ### 6.2 各 MF のプロンプト概要
 
 | 推論 | 入力 | 出力 | 特記事項 |
 |------|------|------|---------|
-| MF-02 FieldExtractor | 書類テキスト（8,000 字以内） | 行形式（16 フィールド）→ ReviewResult + List\<PiiSpan\> | 行形式パースエラー時は最大 2 回リトライ |
+| MF-02 FieldExtractor | 書類テキスト（16,000 字以内） | 行形式（16 フィールド）→ ReviewResult + List\<PiiSpan\> | 行形式パースエラー時は最大 2 回リトライ |
 | MF-03 Translator | ReviewResult の `_ja` フィールド群（原文言語テキスト） | 行形式（5 フィールド）→ Translation | PiiSpan・id 系フィールドは翻訳しない |
 | MF-06a InquiryContextBuilder（目的候補） | ReviewResult の要約・action_items | 目的候補リスト（JSON array） | 失敗時は空リストでフォールバック |
 | MF-07 DocumentChatSession | ReviewResult の構造化フィールド（PII 原文を除く） | チャット応答（ストリーミング） | システムプロンプトに PII spanText は含めない |
@@ -1031,7 +1031,7 @@ sealed class ExtractionError : Exception() {
 - `android.graphics.pdf.PdfRenderer`（API 35）の `Page.getPageContent()` でテキストを取得
 - minSdk = 35 のため API 分岐は不要
 - ページ間は `\n\n` で連結
-- 抽出結果の上限: 8,000 文字（超過時は先頭を優先）
+- 抽出結果の上限: 16,000 文字（超過時は先頭を優先）
 
 ### 7.2 ImageTextExtractor（MF-01b）
 
@@ -1073,7 +1073,7 @@ object ImageTextExtractor {
 - `resolveRecognizerOptions(sourceLanguage)` で言語コードから `TextRecognizerOptionsInterface` を選択
 - `Tasks.await()` で最大 30 秒待機。タイムアウト時は `ExtractionError.OcrFailed` をスロー
 - テキストブロック間は `\n` で連結
-- 抽出結果の上限: 8,000 文字（`TextExtractor.MAX_CHARS` を共有）
+- 抽出結果の上限: 16,000 文字（`TextExtractor.MAX_CHARS` を共有）
 - 抽出結果が空（blank）の場合も `ExtractionError.OcrFailed` をスロー
 
 **カメラ入力の流れ（S-01）:**
@@ -1394,9 +1394,8 @@ data class DocumentBundle(
 
 | 項目 | 上限 | 理由 |
 |------|------|------|
-| MF-01 抽出テキスト | 8,000 文字 | 後段にトリムしてから渡す |
-| MF-02 入力テキスト | 8,000 文字 | Gemma 4 の実コンテキスト上限 32,000 tokens に対し、8,000 文字 ≈ 5,333 tokens + システムプロンプト約 850 tokens = 約 6,200 tokens で余裕あり |
-| MF-06c 文書生成の入力 | 4,000 文字（Q&A 結果含む） | Gemma 4 のコンテキスト長と生成品質のバランス |
+| MF-01 抽出テキスト | 16,000 文字 | 後段にトリムしてから渡す |
+| MF-02 入力テキスト | 16,000 文字 | Gemma 4 の実コンテキスト上限 32,000 tokens に対し、16,000 文字 ≈ 10,667 tokens + システムプロンプト約 850 tokens = 約 11,517 tokens で余裕あり |
 | MF-07 チャット履歴 | 20 ターン（Q&A 10往復）または累計 4,000 文字のいずれか先に達した方 | システムプロンプトと合算してコンテキスト長を超えないようにする。上限に達したら「チャット履歴の上限に達しました」を表示し、新規入力を無効化する |
 
 ### 9.5 MVP で対応しないこと（P2 以降）

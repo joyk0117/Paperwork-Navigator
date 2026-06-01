@@ -719,9 +719,9 @@ enum class ProcessingStep(@StringRes val labelRes: Int) {
 | MF-06 Purpose Candidate Generation Failure (Inference #3) | Hide candidate buttons, display free text input only |
 | MF-02 Line Format Parse Error | Retry maximum 2 times (3 total attempts). On failure, display error |
 | Model Not Downloaded | Redirect to ModelManager screen |
-| Input Text Exceeds Limit | Display "Document too long (8,000 character limit)" |
+| Input Text Exceeds Limit | Display "Document too long (16,000 character limit)" |
 | MF-03 Translation Failure | Set `isTranslating` to false, display "Translation failed. Please retry" in translation bar. Maintain Japanese-only display |
-| MF-07 Chat Inference Timeout (20 seconds) | Display "Answer generation failed. Try again" above chat input. Do not add failed assistant message to history |
+| MF-07 Chat Inference Timeout (60 seconds) | Display "Answer generation failed. Try again" above chat input. Do not add failed assistant message to history |
 | MF-07 Chat Session Init Failure | Hide chat section, keep S-02 review and inquiry features usable |
 
 ---
@@ -996,13 +996,13 @@ For complete prompt text, variable definitions, and evaluation criteria for each
 - Pass document text (any language) in user message, fix output to **line format (Key-Value lines)** (MF-02 / MF-03 common)
 - Real-device validation confirmed LiteRT-LM 0.11.0 Kotlin API has no Constrained Decoding, and complex nested JSON exhibits key-as-value collapse. Adopt line format for both MF-02 and MF-03
 - Include few-shot example to stabilize accuracy
-- Context length limit: trim input text to 8,000 characters maximum (§9.4)
+- Context length limit: trim input text to 16,000 characters maximum (§9.4)
 
 ### 6.2 Prompt Overview per MF
 
 | Inference | Input | Output | Notes |
 |-----------|-------|--------|-------|
-| MF-02 FieldExtractor | Document Text (≤8,000 chars) | Line Format (16 Fields) → ReviewResult + List\<PiiSpan\> | Retry max 2 times on line format parse error |
+| MF-02 FieldExtractor | Document Text (≤16,000 chars) | Line Format (16 Fields) → ReviewResult + List\<PiiSpan\> | Retry max 2 times on line format parse error |
 | MF-03 Translator | ReviewResult `_ja` Fields (Source Language Text) | Line Format (5 Fields) → Translation | Do not translate PiiSpan, id fields |
 | MF-06a InquiryContextBuilder (Purpose Candidates) | ReviewResult Summary · action_items | Purpose Candidate List (JSON array) | Fallback to empty list on failure |
 | MF-07 DocumentChatSession | ReviewResult Structured Fields (Excluding PII Raw Text) | Chat Response (Streaming) | System Prompt excludes PII spanText |
@@ -1040,7 +1040,7 @@ sealed class ExtractionError : Exception() {
 - Use `android.graphics.pdf.PdfRenderer` (API 35) `Page.getPageContent()` to extract text
 - minSdk = 35 requires no API branching
 - Join pages with `\n\n`
-- Extraction result limit: 8,000 characters (prioritize beginning if exceeded)
+- Extraction result limit: 16,000 characters (prioritize beginning if exceeded)
 
 ### 7.2 ImageTextExtractor (MF-01b)
 
@@ -1082,7 +1082,7 @@ object ImageTextExtractor {
 - `resolveRecognizerOptions(sourceLanguage)` selects `TextRecognizerOptionsInterface` from language code
 - `Tasks.await()` waits maximum 30 seconds. Timeout throws `ExtractionError.OcrFailed`
 - Join text blocks with `\n`
-- Extraction result limit: 8,000 characters (share `TextExtractor.MAX_CHARS`)
+- Extraction result limit: 16,000 characters (share `TextExtractor.MAX_CHARS`)
 - Empty (blank) extraction also throws `ExtractionError.OcrFailed`
 
 **Camera Input Flow (S-01):**
@@ -1403,9 +1403,8 @@ Inference times to be measured on actual device and adjusted.
 
 | Item | Limit | Reason |
 |------|-------|--------|
-| MF-01 Extracted Text | 8,000 chars | Trim before passing to later stages |
-| MF-02 Input Text | 8,000 chars | Gemma 4 actual context limit 32,000 tokens; 8,000 chars ≈ 5,333 tokens + system prompt ~850 tokens = ~6,200 tokens with headroom |
-| MF-06c Document Generation Input | 4,000 chars (including Q&A results) | Balance Gemma 4 context length and generation quality |
+| MF-01 Extracted Text | 16,000 chars | Trim before passing to later stages |
+| MF-02 Input Text | 16,000 chars | Gemma 4 actual context limit 32,000 tokens; 16,000 chars ≈ 10,667 tokens + system prompt ~850 tokens = ~11,517 tokens with headroom |
 | MF-07 Chat History | 20 Turns (10 Q&A exchanges) or Cumulative 4,000 chars, whichever first | Prevent exceeding total context length. Display "Chat history limit reached" and disable new input when reached |
 
 ### 9.5 Out of Scope for MVP (P2 onwards)

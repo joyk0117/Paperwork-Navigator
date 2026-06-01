@@ -100,13 +100,13 @@ MF-02, MF-03, MF-06, and MF-07 are unit-tested using mocked `LlmModelHelper` wit
 | Procedure | Call `TextExtractor.extract()` |
 | Expected Result | File contents returned as-is |
 
-### TC-01-05: Trim Exceeding 8,000 Characters
+### TC-01-05: Trim Exceeding 16,000 Characters
 
 | Item | Content |
 |------|---------|
-| Prerequisite | PDF containing 9,000 characters |
+| Prerequisite | PDF containing 17,000 characters |
 | Procedure | Call `TextExtractor.extract()` |
-| Expected Result | Return value is maximum 8,000 characters<br>First 8,000 characters are preserved |
+| Expected Result | Return value is maximum 16,000 characters<br>First 16,000 characters are preserved |
 
 ### TC-01-06: Unsupported Format
 
@@ -142,6 +142,66 @@ MF-02, MF-03, MF-06, and MF-07 are unit-tested using mocked `LlmModelHelper` wit
 | Type | Unit |
 | Procedure | Call `TextExtractor.normalizeSpaces("a\t  　b")` (mixture of tab, normal space, non-breaking space, and full-width space) |
 | Expected Result | `"a b"` is returned (consecutive horizontal whitespace collapsed to single space) |
+
+### MF-01b: ImageTextExtractor Tests
+
+### TC-01b-01: Normal OCR from Image
+
+| Item | Content |
+|------|---------|
+| Target | `ImageTextExtractor.extractFromBitmap()` |
+| Type | Integration (ML Kit test library) |
+| Prerequisite | Bitmap containing text (test image), sourceLanguage = `"ja"` |
+| Procedure | Call `ImageTextExtractor.extractFromBitmap(bitmap, "ja")` |
+| Expected Result | A non-empty string is returned |
+
+### TC-01b-02: OCR Timeout (30 seconds)
+
+| Item | Content |
+|------|---------|
+| Target | `ImageTextExtractor.extractFromBitmap()` |
+| Type | Unit (`TestCoroutineScheduler`) |
+| Procedure | Block ML Kit processing and advance virtual time by 30,001 ms |
+| Expected Result | `ExtractionError.OcrFailed` is thrown |
+
+### TC-01b-03: Empty OCR Result
+
+| Item | Content |
+|------|---------|
+| Target | `ImageTextExtractor.extractFromBitmap()` |
+| Type | Unit (ML Kit mock) |
+| Prerequisite | ML Kit mocked to return empty text |
+| Expected Result | `ExtractionError.OcrFailed` is thrown |
+
+### MF-01c: OcrCorrector Tests
+
+### TC-01c-01: Normal OCR Correction
+
+| Item | Content |
+|------|---------|
+| Target | `OcrCorrector.correct()` |
+| Type | Unit (`LlmModelHelper` mock) |
+| Prerequisite | Mock returns a string containing `"CORRECT: wrong|correct"` |
+| Procedure | Call `OcrCorrector.correct(model, "...wrong...", listOf(bitmap))` |
+| Expected Result | Return value contains `"correct"` |
+
+### TC-01c-02: Returns Original Text on Inference Failure
+
+| Item | Content |
+|------|---------|
+| Target | `OcrCorrector.correct()` |
+| Type | Unit (`LlmModelHelper` mock) |
+| Prerequisite | Mock throws an exception |
+| Expected Result | `ocrText` is returned unchanged (no exception thrown) |
+
+### TC-01c-03: Returns Original Text on Timeout
+
+| Item | Content |
+|------|---------|
+| Target | `OcrCorrector.correct()` |
+| Type | Unit (`TestCoroutineScheduler`) |
+| Procedure | Advance virtual time by 60,001 ms |
+| Expected Result | `ocrText` is returned unchanged (no crash) |
 
 ---
 
@@ -221,13 +281,13 @@ MF-02, MF-03, MF-06, and MF-07 are unit-tested using mocked `LlmModelHelper` wit
 | Prerequisite | Mock returns JSON with `"applicable": null` |
 | Expected Result | `conditions[0].applicable == null` |
 
-### TC-02-11: MF-02 Input Text Trimmed to 6,000 Characters
+### TC-02-11: MF-02 Input Text Trimmed to 16,000 Characters
 
 | Item | Content |
 |------|---------|
 | Type | Unit (ViewModel) |
-| Prerequisite | `TextExtractor` returns 7,000 characters |
-| Expected Result | Text passed to `FieldExtractor.extract()` is trimmed to 6,000 characters or less<br>(Specification §9.4: MF-02 input limit is 6,000 characters) |
+| Prerequisite | `TextExtractor` returns 17,000 characters |
+| Expected Result | Text passed to `FieldExtractor.extract()` is trimmed to 16,000 characters or less<br>(Specification §9.4: MF-02 input limit is 16,000 characters) |
 
 ---
 
@@ -838,13 +898,13 @@ MF-02, MF-03, MF-06, and MF-07 are unit-tested using mocked `LlmModelHelper` wit
 | Prerequisite | `DocumentChatSession.initialize()` throws exception |
 | Expected Result | Chat section hidden<br>Review and escalation features remain usable |
 
-### TC-ERR-06: Direct Text Input Exceeds 8,000 Characters
+### TC-ERR-06: Direct Text Input Exceeds 16,000 Characters
 
 | Item | Content |
 |------|---------|
-| Prerequisite | **Paste 8,001 characters directly in text area** (text input path, not PDF selection) |
-| Expected Result | "Document too long (limit 8,000 characters)" is displayed<br>`startAnalysis()` is aborted |
-| Note | PDF selection path auto-trims to 8,000 via TextExtractor (confirmed by TC-01-05), so this error only occurs for direct text input |
+| Prerequisite | **Paste 16,001 characters directly in text area** (text input path, not PDF selection) |
+| Expected Result | "Document too long (limit 16,000 characters)" is displayed<br>`startAnalysis()` is aborted |
+| Note | PDF selection path auto-trims to 16,000 via TextExtractor (confirmed by TC-01-05), so this error only occurs for direct text input |
 
 ### TC-ERR-07: Model Not Downloaded
 
