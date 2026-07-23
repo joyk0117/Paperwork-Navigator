@@ -1,6 +1,5 @@
 .DS_Store
 .tmp/
-node_modules/
 
 # Android Studio / IntelliJ IDEA
 .idea/
@@ -20,8 +19,3 @@ Bug_Reporting_Guide.md
 Function_Calling_Guide.md
 CONTRIBUTING.md
 DEVELOPMENT.md
-
-# Quartz build artifacts
-content/
-.quartz-cache/
-quartz/public/
