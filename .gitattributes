@@ -1,0 +1,19 @@
+# Normalize all text files to LF line endings in the repository,
+# regardless of the OS/editor used to check them out.
+* text=auto eol=lf
+
+# Windows-only scripts should keep CRLF.
+*.bat text eol=crlf
+
+# Explicit binary types (never touch line endings, never diff as text).
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.mp3 binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+*.jar binary
